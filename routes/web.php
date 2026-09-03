@@ -4,6 +4,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\AdminController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -13,7 +14,13 @@ Route::get('/', function () {
 
 Route::resource('books',BookController::class);
 Route::resource('categories', CategoryController::class)->except(['show']);
-Route::resource('loans', LoanController::class);
 Route::resource('members', MemberController::class);
-Route::put('/loans/{$id}/kembalikan', [LoanController::class, 'kembalikan'])
+Route::resource('loans', LoanController::class);
+Route::put('/loans/{id}/kembalikan', [LoanController::class, 'kembalikan'])
     ->name('loans.kembalikan');
+Route::prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard']);
+    Route::get('/users', [AdminController::class, 'users']);
+    Route::get('/settings', [AdminController::class, 'settings']);
+    Route::get('/info', [AdminController::class, 'info']);
+});
