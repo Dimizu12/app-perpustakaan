@@ -16,8 +16,13 @@ class AdminController extends Controller
         return 'Admin Information';
     }
 
-    public function setting()
+    public function settings()
     {
-        return 'Admin Setting';
+        return 'Admin Settings';
+    }
+
+    public function users()
+    {
+        return 'Admin Users';
     }
 }
