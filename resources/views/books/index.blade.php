@@ -19,7 +19,7 @@
                 <th>Stok</th>
                 <th>Kategori</th>
                 <th>Aksi</th>
-            </tr>S
+            </tr>
         </thead>
         <tbody>
             @forelse ($books as $book)
