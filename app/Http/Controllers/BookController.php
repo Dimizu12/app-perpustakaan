@@ -4,31 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBookRequest;
 use Illuminate\Http\Request;
+use App\Models\Book;
+use App\Models\Category;
 
 class BookController extends Controller
 {
-    private array $categories = [
-        ['id' => 1, 'category_name' => 'Fiction'],
-        ['id' => 2, 'category_name' => 'Tech'],
-        ['id' => 3, 'category_name' => 'History'],
-    ];
-
-    private array $books = [
-        ['id' => 1, 'title' => 'Laskar Pelangi', 'writer' => 'Andrea Hirata', 'publisher' => 'Bentang Pustaka', 'publication_year' => 2005, 'isbn' => '9789793062792', 'stock' => 5, 'category_id' => 1, 'category' => 'Fiction'],
-        ['id' => 2, 'title' => 'Bumi Manusia', 'writer' => 'Pramoedya Ananta Toer', 'publisher' => 'Hasta Mitra', 'publication_year' => 1980, 'isbn' => '9789794330746', 'stock' => 3, 'category_id' => 1, 'category' => 'Fiction'],
-        ['id' => 3, 'title' => 'Clean Code', 'writer' => 'Robert C. Martin', 'publisher' => 'Prentice Hall', 'publication_year' => 2008, 'isbn' => '9780132350884', 'stock' => 7, 'category_id' => 2, 'category' => 'Tech'],
-    ];
-
     public function index()
     {
-        $books = $this->books;
+        $books = Book::orderBy('id')->paginate(10);
 
         return view('books.index', compact('books'));
     }
 
     public function create()
     {
-        $categories = $this->categories;
+        $categories = Category::all();
 
         return view('books.create', compact('categories'));
     }
@@ -37,49 +27,54 @@ class BookController extends Controller
     {
         $validated = $request->validated();
 
+        Book::create($validated);
+
         return redirect()->route('books.index')
-            ->with('success', "Buku \"{$validated['title']}\" berhasil ditambahkan (data dummy, belum tersimpan ke database).");
+            ->with('success', "Books \"{$validated['title']}\" berhasil ditambahkan.");
     }
 
     public function show(string $id)
     {
-        $book = collect($this->books)->firstWhere('id', (int) $id);
-
-        abort_if(! $book, 404);
+        $book = Book::findOrFail($id);
 
         return view('books.show', compact('book'));
     }
 
     public function edit(string $id)
     {
-        $book = collect($this->books)->firstWhere('id', (int) $id);
-
-        abort_if(! $book, 404);
-
-        $categories = $this->categories;
+        $book = Book::findOrFail($id);
+        $categories = Category::all();
 
         return view('books.edit', compact('book', 'categories'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(StoreBookRequest $request, string $id)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:200',
-            'writer' => 'required|string|max:100',
-            'publisher' => 'required|string|max:100',
-            'publication_year' => 'required|integer|min:1900|max:'.date('Y'),
-            'isbn' => 'nullable|string|max:20',
-            'stock' => 'required|integer|min:0',
-            'category_id' => 'required|integer',
-        ]);
+        $book = Book::findOrFail($id);
+        $validated = $request->validated();
+
+        // $validated = $request->validate([
+        //     'title' => 'required|string|max:200',
+        //     'writer' => 'required|string|max:100',
+        //     'publisher' => 'required|string|max:100',
+        //     'publication_year' => 'required|integer|min:1900|max:'.date('Y'),
+        //     'isbn' => 'nullable|string|max:20',
+        //     'stock' => 'required|integer|min:0',
+        //     'category_id' => 'required|integer|exists:categories,id',
+        // ]);
+
+        $book->update($validated);
 
         return redirect()->route('books.index')
-            ->with('success', "Buku \"{$validated['title']}\" berhasil diperbarui (data dummy, belum tersimpan ke database).");
+            ->with('success', "Book \"{$validated['title']}\" berhasil diperbarui.");
     }
 
     public function destroy(string $id)
     {
+        $book = Book::findOrFail($id);
+        $book->delete();
+
         return redirect()->route('books.index')
-            ->with('success', "Buku dengan id {$id} berhasil dihapus (data dummy, belum tersimpan ke database).");
+            ->with('success', 'Book berhasil dihapus.');
     }
 }

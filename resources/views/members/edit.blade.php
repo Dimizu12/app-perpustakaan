@@ -16,7 +16,7 @@
     <h1>Edit Member</h1>
     <p><a href="{{ route('members.index') }}">&larr; back to member list</a></p>
 
-    <form action="{{ route('members.update', $member['nim']) }}" method="POST">
+    <form action="{{ route('members.update', $member['id']) }}" method="POST">
         @csrf
         @method('PUT')
 

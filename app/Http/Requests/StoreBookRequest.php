@@ -28,7 +28,7 @@ class StoreBookRequest extends FormRequest
             'publication_year' => 'required|integer|min:1900|max:'.date('Y'),
             'isbn' => 'nullable|string|max:20',
             'stock' => 'required|integer|min:0',
-            'category_id' => 'required|integer'
+            'category_id' => 'required|integer|exists:categories,id'
         ];
     }
 
@@ -46,7 +46,8 @@ class StoreBookRequest extends FormRequest
             'stock.required' => 'The stock is required.',
             'stock.integer' => 'The stock must be a number.',
             'stock.min' => 'The stock cannot be less than 0.',
-            'category_id.required' => 'The category must be selected.'
+            'category_id.required' => 'The category must be selected.',
+            'category_id.exists' =>  'invalid category'
         ];
     }
 }

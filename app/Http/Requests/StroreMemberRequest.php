@@ -7,24 +7,16 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StroreMemberRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array {
         return [
             'name' => 'required|string|max:100',
-            'nim' => 'required|string',
-            'email' => 'required|string|email|max:255',
+            'nim' => 'required|string|unique:members,nim',
+            'email' => 'required|string|email|max:255|unique:members,email',
             'phone_num' => 'required|string|digits_between:4,15', //make this to number data type that can zero as the first input
             'address' => 'required|string',
             'status' => 'required|string',

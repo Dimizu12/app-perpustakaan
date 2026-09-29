@@ -40,24 +40,15 @@
             <div class="error">{{ $message }}</div>
         @enderror
 
-        <label for="status">Status</label>
-        <input type="text" name="status" id="status" value="{{ old('status') }}">
+        <label for="status">Kategori</label>
+        <select name="status" id="status">
+            <option value="">-- Pilih Kategori--</option>
+                <option value="active" @selected(old('status') == 'active')> Active </option>
+                <option value="non-active" @selected(old('status') == 'non-active')> Non-Active </option>
+        </select>
         @error('status')
             <div class="error">{{ $message }}</div>
         @enderror
-
-        {{-- <label for="category_id">Kategori</label>
-        <select name="category_id" id="category_id">
-            <option value="">-- Pilih Kategori gayest--</option>
-            @foreach ($categories as $category)
-                <option value="{{ $category['id'] }}" @selected(old ('category_id') == $category['id'])>
-                    {{ $category['category_name'] }}
-                </option>
-            @endforeach
-        </select>
-        @error('category_id')
-            <div class="error">{{ $message }}</div>
-        @enderror --}}
 
         <button type="submit" class="btn">Simpan</button>
     </form>
